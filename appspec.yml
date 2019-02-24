@@ -1,0 +1,39 @@
+version: 0.0
+os: ubuntu
+files:
+  - source: /
+    destination: /home/ubuntu/quiz
+permissions:
+  - object: /home/ubuntu/www
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+hooks:
+  BeforeInstall:
+    - location: scripts/clean_instance.sh
+      timeout: 6000
+      runas: root
+  AfterInstall:
+    - location: scripts/install_os_dependencies.sh
+      timeout: 6000
+      runas: root
+    - location: scripts/install_python_dependencies.sh
+      timeout: 6000
+      runas: ubuntu
+    - location: scripts/migrate.sh
+      timeout: 6000
+      runas: ubuntu
+    - location: scripts/gunicorn.sh
+      timeout: 6000
+      runas: ubuntu
+    - location: scripts/ngnix.sh
+      timeout: 6000
+      runas: ubuntu
+  ApplicationStart:
+    - location: scripts/start_application.sh
+      timeout: 6000
+      runas: ubuntu
+  ApplicationStop:
+    - location: scripts/stop_application.sh
+      timeout: 6000
+      runas: ubuntu
